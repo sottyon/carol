@@ -25,6 +25,7 @@ h1{font-size:clamp(28px,5vw,44px);max-width:16em}
 .controls .wrap{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chip{font:500 14px Figtree,sans-serif;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--green);color:var(--onGreen);border-color:var(--green)}
+.chip[data-f="outside"]{border:2px solid var(--gold);font-weight:700}
 .sort{margin-left:auto;font:500 14px Figtree,sans-serif;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
 button:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .dest{margin:40px 0 0}
@@ -37,6 +38,18 @@ button:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{
 .flight-links{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
 .flight-links a{display:inline-flex;align-items:center;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 11px;color:var(--green);font-size:14px;font-weight:700;text-decoration:none}
 .flight-links a:hover{background:var(--leaf)}
+.login-screen{display:grid;min-height:100vh;place-items:center;padding:24px;background:var(--bg)}
+.login-screen[hidden]{display:none}
+.login-card{width:min(100%,420px);padding:clamp(24px,6vw,40px);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.login-card h1{font-size:30px}
+.login-card p{color:var(--muted)}
+.login-card label{display:block;margin:16px 0 6px;font-weight:700}
+.login-card input{width:100%;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.login-card button{width:100%;margin-top:20px;font:700 16px Figtree,sans-serif;background:var(--green);color:var(--onGreen);border:0;border-radius:8px;padding:12px 22px;cursor:pointer}
+.login-card button:disabled{opacity:.65;cursor:wait}
+.login-message{min-height:1.5em;margin-bottom:0}
+.access-bar{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:12px}
+.access-bar button{font:500 14px Figtree,sans-serif;color:var(--green);background:transparent;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;position:relative}
 .card.picked{border:2px solid var(--gold);padding:19px}
@@ -94,16 +107,31 @@ footer a{color:var(--green);font-weight:700}
 </style>
 </head>
 <body>
+<section class="login-screen" id="login-screen">
+<form class="login-card" id="login-form">
+<p class="eighty" aria-hidden="true">80</p>
+<h1>Carol’s 80th birthday trip</h1>
+<p>Enter your name and the trip password to explore options, vote, and see the poll results.</p>
+<label for="login-name">Your name</label>
+<input id="login-name" name="name" type="text" maxlength="40" autocomplete="name" required>
+<label for="login-password">Trip password</label>
+<input id="login-password" name="password" type="password" autocomplete="current-password" required>
+<button id="login-button" type="submit">Enter the site</button>
+<p class="login-message" id="login-message" role="status" aria-live="polite"></p>
+</form>
+</section>
+<div id="site-app" hidden>
 <header><div class="wrap">
 <p class="eighty" aria-hidden="true">80</p>
 <h1>Carol’s 80th birthday trip, December 2026</h1>
 <p class="sub">Browse every destination and place to stay, compare costs for different group sizes, then cast your vote for your top 3 destinations on the Vote tab. Results are on the Results tab.</p>
 <ul class="facts"><li>December 2026</li></ul>
+<div class="access-bar"><span id="signed-in-as"></span><button type="button" id="logout">Sign out</button></div>
 <section class="how" aria-labelledby="howh"><h2 id="howh">How to use this site</h2>
 <ol>
 <li>On the <b>Options</b> tab, browse each destination and place to stay. Use the People buttons (1, 3, 5, 7 or 10) to see what the trip costs for your group size.</li>
 <li>Tap the heart on up to 3 places you like to build a personal shortlist. This is just for you and does not count as a vote.</li>
-<li>Open the <b>Vote</b> tab, enter your name and choose your top 3 destinations.</li>
+<li>Open the <b>Vote</b> tab and choose your top 3 destinations.</li>
 <li>Press <b>Submit my vote</b>. Your vote only counts once it is submitted.</li>
 <li>Check the <b>Results</b> tab to see how the destinations are ranking. You can come back and change your vote anytime.</li>
 </ol>
@@ -125,9 +153,7 @@ footer a{color:var(--green);font-weight:700}
 </div>
 <section id="tab-vote" class="wrap pane" hidden>
 <h2>Vote for your top 3 destinations</h2>
-<p class="intro">Enter your name, choose exactly 3 destinations, and submit. You can come back and change your vote anytime.</p>
-<label class="field" for="vname">Your name</label>
-<input class="vin" id="vname" type="text" maxlength="40" autocomplete="name" placeholder="First and last name">
+<p class="intro">Signed in as <b id="vote-name"></b>. Choose exactly 3 destinations and submit. You can come back and change your vote anytime.</p>
 <div class="field" id="vcount">Choose 3 destinations (0 of 3)</div>
 <div class="opts" id="vopts"></div>
 <button class="go" id="vgo" type="button">Submit my vote</button>
@@ -142,6 +168,7 @@ footer a{color:var(--green);font-weight:700}
 <p>Resort prices come from the Costco Travel Portal and include flights, food and airport transfer for the stay (per person, based on 2 adults). Villa and home prices are lodging per person for about 10 guests plus approximate flights; food is not included. Group-size prices are estimates: resort packages are multiplied per person, and for villas the lodging total (the 10-person price × 10) is split across the group while flights are added per traveler. Prices will change. Florida and Las Vegas homes are Airbnb listings with prices shown on Airbnb.</p>
 <p>Planned by SOT Travel Inc.</p>
 </div></footer>
+</div>
 
 <script>
 const R="Resort package",V="Private villa / rental",A="Airbnb";
@@ -235,9 +262,64 @@ if(e.target.id==="clear"){picks=[];save();render()}
 });
 document.addEventListener("change",e=>{if(e.target.id==="sort"){sort=e.target.value;render()}});
 chips();render();
+const SUPABASE_URL="https://eqvmdhmlgvkyhthoeyvt.supabase.co";
+const SUPABASE_PUBLIC_KEY="sb_publishable_XFTfUbuo-Q8y7J8_nKsvQg_3PBLFWhm";
+const SESSION_KEY="carol80siteSession";
 const DS=D.map(d=>({id:d.id,n:d.name}));
-let db=null,myId=null,votes=[],sel=[],loaded=false,filled=false;
+let siteSession=null,votes=[],sel=[],loaded=false;
 const $=id=>document.getElementById(id);
+async function api(action,data={}){
+const response=await fetch(`${SUPABASE_URL}/functions/v1/site-api`,{
+method:"POST",
+headers:{"Content-Type":"application/json","apikey":SUPABASE_PUBLIC_KEY},
+body:JSON.stringify({action,...data})
+});
+let result={};
+try{result=await response.json()}catch(e){}
+if(!response.ok){
+const message=result.error||"The site service is unavailable. Please try again.";
+if(response.status===401&&action!=="login"){clearSession();setLoginMessage("Your sign-in expired. Enter your name and trip password again.");}
+throw new Error(message);
+}
+return result;
+}
+function setLoginMessage(message){$("login-message").textContent=message}
+function setSignedIn(){
+$("login-screen").hidden=true;
+$("site-app").hidden=false;
+$("signed-in-as").textContent=`Signed in as ${siteSession.name}`;
+$("vote-name").textContent=siteSession.name;
+}
+function clearSession(){
+siteSession=null;
+try{sessionStorage.removeItem(SESSION_KEY)}catch(e){}
+$("site-app").hidden=true;
+$("login-screen").hidden=false;
+}
+async function loadVotes(){
+const result=await api("list",{token:siteSession.token});
+votes=result.votes;
+loaded=true;
+const key=siteSession.name.normalize("NFKC").trim().toLowerCase();
+const mine=votes.find(v=>v.name_key===key);
+sel=mine?mine.picks.filter(id=>DS.some(d=>d.id===id)):[];
+renderVote();
+renderResults();
+}
+async function resumeSession(){
+try{
+const saved=sessionStorage.getItem(SESSION_KEY);
+if(!saved)return;
+const restored=JSON.parse(saved);
+if(typeof restored.token!=="string"||typeof restored.name!=="string")throw new Error("Invalid saved session.");
+siteSession=restored;
+await loadVotes();
+setSignedIn();
+}catch(e){
+clearSession();
+setLoginMessage("Your sign-in expired or the poll service is unavailable. Enter your name and password to continue.");
+}
+}
 function showTab(t){
 if(!["options","vote","results"].includes(t))t="options";
 ["options","vote","results"].forEach(x=>{$("tab-"+x).hidden=x!==t});
@@ -249,8 +331,6 @@ $("vcount").textContent=`Choose 3 destinations (${sel.length} of 3)`;
 }
 function say(t,err){const m=$("vmsg");m.textContent=t;m.className="msg"+(err?" err":"")}
 function renderResults(){
-const names=Object.fromEntries(DS.map(d=>[d.id,d.n]));
-if(!db){$("rsum").textContent="Results appear here when the page is opened while signed in to Claude.";$("rbars").innerHTML="";return}
 if(!loaded){$("rsum").textContent="Loading votes…";return}
 const c={};DS.forEach(d=>c[d.id]=[]);
 votes.forEach(v=>(v.picks||[]).forEach(id=>{if(c[id])c[id].push(v.name||"Guest")}));
@@ -259,35 +339,42 @@ const max=Math.max(1,...rows.map(r=>r.v.length));
 $("rsum").textContent=votes.length?`${votes.length} ${votes.length===1?"person has":"people have"} voted. Each person picks 3 destinations.`:"No votes yet. Be the first on the Vote tab.";
 $("rbars").innerHTML=rows.map(r=>`<div class="brow"><span>${r.d.n}</span><div class="track"><div class="fill" style="width:${r.v.length/max*100}%"></div></div><b>${r.v.length}</b>${r.v.length?`<p class="who">${r.v.map(esc).join(", ")}</p>`:""}</div>`).join("");
 }
-async function initVotes(){
-try{
-const u=window.claude&&await claude.use("user");db=window.claude&&await claude.use("db");
-if(u&&db)myId=await u.id();else db=null;
-}catch(e){db=null}
-if(!db||!myId){db=null;renderResults();say("Voting needs this page opened while signed in to Claude with contributor access.",true);return}
-const t=setTimeout(()=>{if(!loaded){$("rsum").textContent="Votes are taking a while to load. Refresh to try again."}},10000);
-db.collection("votes").onSnapshot(snap=>{
-clearTimeout(t);loaded=true;votes=snap.docs.map(d=>({id:d.id,...d.data()}));
-const mine=votes.find(v=>v.id===myId);
-if(mine&&!filled){filled=true;$("vname").value=mine.name||"";sel=(mine.picks||[]).filter(x=>DS.some(d=>d.id===x));renderVote()}
-renderResults();
-},()=>{clearTimeout(t);$("rsum").textContent="Could not load votes right now."});
-}
 document.addEventListener("click",e=>{
 const t=e.target.closest(".tab");if(t){location.hash=t.dataset.t;return}
 const v=e.target.closest("[data-v]");
 if(v){const id=v.dataset.v;if(sel.includes(id))sel=sel.filter(x=>x!==id);else if(sel.length<3)sel.push(id);else say("You can pick 3. Tap one to remove it first.",true);renderVote();return}
 });
 $("vgo").addEventListener("click",async()=>{
-const name=$("vname").value.trim();
-if(!name){say("Add your name before voting.",true);$("vname").focus();return}
 if(sel.length!==3){say("Choose exactly 3 destinations.",true);return}
-if(!db){say("Voting needs this page opened while signed in to Claude with contributor access.",true);return}
-try{await db.collection("votes").doc(myId).set({name,picks:sel,at:Date.now()});say("Vote saved. Thank you, "+name+"! See the Results tab.")}
-catch(e){say("Your vote could not be saved. You may only have view access to this page.",true)}
+if(!siteSession){say("Sign in before voting.",true);return}
+try{
+await api("vote",{token:siteSession.token,picks:sel});
+await loadVotes();
+say("Vote saved. Thank you, "+siteSession.name+"! See the Results tab.");
+}catch(e){say(e.message,true)}
 });
+$("login-form").addEventListener("submit",async e=>{
+e.preventDefault();
+const name=$("login-name").value.trim();
+const password=$("login-password").value;
+if(!name){setLoginMessage("Enter your name to continue.");$("login-name").focus();return}
+const button=$("login-button");
+button.disabled=true;
+setLoginMessage("Checking the trip password…");
+try{
+const result=await api("login",{name,password});
+siteSession={name:result.name,token:result.token};
+sessionStorage.setItem(SESSION_KEY,JSON.stringify(siteSession));
+await loadVotes();
+setSignedIn();
+setLoginMessage("");
+$("login-password").value="";
+}catch(e){siteSession=null;try{sessionStorage.removeItem(SESSION_KEY)}catch(storageError){}setLoginMessage(e.message)}
+finally{button.disabled=false}
+});
+$("logout").addEventListener("click",()=>{clearSession();setLoginMessage("");$("login-password").value=""});
 window.addEventListener("hashchange",()=>showTab(location.hash.slice(1)));
-renderVote();showTab(location.hash.slice(1));initVotes();
+renderVote();showTab(location.hash.slice(1));resumeSession();
 </script>
 </body>
 </html>
