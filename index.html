@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Plan a more joyful holiday season with the Interactive Holiday Planner."
+      content="A simple, colorful holiday planner for your checklist, budget, and countdown."
     >
     <meta name="theme-color" content="#420460">
     <title>Holiday Planner</title>
@@ -18,6 +18,9 @@
         --white: #ffffff;
         --pink: #fd91e8;
         --ink: #0e0c0d;
+        --muted: #716779;
+        --line: #eee7f2;
+        --surface: #fffaff;
       }
 
       * {
@@ -28,35 +31,39 @@
         min-width: 320px;
         min-height: 100vh;
         margin: 0;
-        color: var(--white);
+        color: var(--ink);
         background:
-          radial-gradient(ellipse at 86% 12%, color-mix(in srgb, var(--purple) 35%, transparent), transparent 34rem),
-          var(--deep-purple);
+          radial-gradient(ellipse at 86% 12%, rgb(163 17 232 / 17%), transparent 34rem),
+          var(--surface);
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
-      a {
-        color: inherit;
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
       }
 
       .site-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 1rem;
-        width: min(100% - 3rem, 1200px);
-        min-height: 78px;
+        width: min(100% - 3rem, 1120px);
+        min-height: 76px;
         margin-inline: auto;
       }
 
       .brand {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.8rem;
-        color: var(--white);
+        gap: 0.75rem;
+        color: var(--deep-purple);
         font-size: 1rem;
-        font-weight: 750;
-        letter-spacing: -0.02em;
+        font-weight: 800;
+        letter-spacing: -0.035em;
         text-decoration: none;
       }
 
@@ -65,149 +72,476 @@
         width: 38px;
         height: 38px;
         place-items: center;
-        border-radius: 12px;
+        border-radius: 13px;
         color: var(--ink);
         background: var(--pink);
         font-size: 1.15rem;
       }
 
-      .canva-link {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 42px;
-        padding: 0.65rem 1rem;
-        border: 1px solid rgb(255 255 255 / 35%);
-        border-radius: 999px;
-        color: var(--white);
-        font-size: 0.875rem;
-        font-weight: 650;
-        text-decoration: none;
-        transition: background-color 160ms ease, border-color 160ms ease;
+      .save-status {
+        color: var(--muted);
+        font-size: 0.8rem;
       }
 
-      .canva-link:hover,
-      .canva-link:focus-visible {
-        border-color: var(--pink);
-        background: rgb(253 145 232 / 14%);
-      }
-
-      .canva-link:focus-visible,
-      .brand:focus-visible {
-        outline: 3px solid var(--pink);
-        outline-offset: 4px;
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        clip-path: inset(50%);
       }
 
       main {
         width: min(100% - 3rem, 1120px);
         margin: 0 auto;
-        padding: clamp(1.75rem, 5vw, 3.75rem) 0 2.5rem;
+        padding: 2rem 0 3rem;
       }
 
-      .intro {
-        margin: 0 auto 1.5rem;
-        text-align: center;
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(2rem, 6vw, 4.5rem);
+        border-radius: 28px;
+        color: var(--white);
+        background:
+          radial-gradient(circle at 88% 20%, rgb(253 145 232 / 48%), transparent 15rem),
+          linear-gradient(125deg, var(--deep-purple), #5e0782 68%, var(--purple));
+      }
+
+      .hero::after {
+        position: absolute;
+        right: 8%;
+        bottom: -5.8rem;
+        width: 15rem;
+        height: 15rem;
+        border: 1px solid rgb(255 255 255 / 18%);
+        border-radius: 50%;
+        content: "";
+        box-shadow: 0 0 0 2rem rgb(255 255 255 / 5%), 0 0 0 4rem rgb(255 255 255 / 4%);
+        pointer-events: none;
       }
 
       .eyebrow {
-        margin: 0 0 0.65rem;
+        margin: 0 0 0.75rem;
         color: var(--pink);
         font-size: 0.75rem;
-        font-weight: 750;
-        letter-spacing: 0.14em;
+        font-weight: 800;
+        letter-spacing: 0.15em;
         text-transform: uppercase;
       }
 
       h1 {
+        max-width: 12ch;
         margin: 0;
-        color: var(--white);
-        font-size: clamp(2rem, 5vw, 3.5rem);
-        font-weight: 760;
-        letter-spacing: -0.055em;
-        line-height: 1.05;
+        font-size: clamp(2.4rem, 7vw, 5rem);
+        font-weight: 780;
+        letter-spacing: -0.065em;
+        line-height: 0.98;
       }
 
-      .intro-copy {
-        max-width: 36rem;
-        margin: 0.8rem auto 0;
+      .hero-copy {
+        max-width: 34rem;
+        margin: 1rem 0 0;
         color: var(--lavender);
-        font-size: clamp(0.95rem, 2vw, 1.1rem);
+        font-size: clamp(1rem, 2vw, 1.15rem);
         line-height: 1.6;
       }
 
-      .planner-frame {
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        margin: -1.5rem 1.5rem 1.5rem;
         position: relative;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        overflow: hidden;
-        border: 1px solid rgb(231 190 253 / 32%);
+        z-index: 1;
+      }
+
+      .stat-card {
+        min-height: 112px;
+        padding: 1.2rem 1.35rem;
+        border: 1px solid var(--line);
         border-radius: 18px;
         background: var(--white);
+        box-shadow: 0 12px 30px rgb(66 4 96 / 7%);
       }
 
-      .planner-frame iframe {
-        position: absolute;
-        inset: 0;
+      .stat-label {
         display: block;
-        width: 100%;
-        height: 100%;
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 650;
+      }
+
+      .stat-value {
+        display: block;
+        margin-top: 0.25rem;
+        color: var(--deep-purple);
+        font-size: clamp(1.45rem, 3vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.05em;
+      }
+
+      .planner-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+        gap: 1rem;
+      }
+
+      .card {
+        min-width: 0;
+        padding: clamp(1.2rem, 3vw, 1.75rem);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--white);
+        box-shadow: 0 8px 26px rgb(66 4 96 / 5%);
+      }
+
+      .card-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+      }
+
+      h2 {
         margin: 0;
-        padding: 0;
-        border: 0;
+        color: var(--deep-purple);
+        font-size: 1.2rem;
+        font-weight: 780;
+        letter-spacing: -0.035em;
+      }
+
+      .card-description {
+        margin: 0.35rem 0 0;
+        color: var(--muted);
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
+
+      .task-form {
+        display: flex;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+      }
+
+      .task-input,
+      .date-input,
+      .money-input {
+        min-width: 0;
+        border: 1px solid #dcd1e2;
+        border-radius: 10px;
+        color: var(--ink);
         background: var(--white);
       }
 
-      footer {
-        padding: 1.25rem 1rem 2rem;
-        color: var(--lavender);
-        font-size: 0.8rem;
+      .task-input {
+        flex: 1;
+        min-height: 44px;
+        padding: 0.65rem 0.8rem;
+      }
+
+      .task-input::placeholder {
+        color: #91879a;
+      }
+
+      .primary-button {
+        min-height: 44px;
+        padding: 0.65rem 1rem;
+        border: 0;
+        border-radius: 10px;
+        color: var(--white);
+        background: var(--purple);
+        font-size: 0.875rem;
+        font-weight: 750;
+        transition: background-color 150ms ease, transform 150ms ease;
+      }
+
+      .primary-button:hover {
+        background: var(--deep-purple);
+      }
+
+      .primary-button:active {
+        transform: translateY(1px);
+      }
+
+      .task-input:focus-visible,
+      .date-input:focus-visible,
+      .money-input:focus-visible,
+      .primary-button:focus-visible,
+      .remove-button:focus-visible,
+      .clear-button:focus-visible {
+        outline: 3px solid var(--pink);
+        outline-offset: 2px;
+      }
+
+      .task-list {
+        display: grid;
+        gap: 0.55rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .task-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-height: 50px;
+        padding: 0.65rem 0.7rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+      }
+
+      .task-checkbox {
+        width: 19px;
+        height: 19px;
+        flex: 0 0 auto;
+        accent-color: var(--purple);
+        cursor: pointer;
+      }
+
+      .task-label {
+        flex: 1;
+        overflow-wrap: anywhere;
+        color: var(--ink);
+        font-size: 0.9rem;
+      }
+
+      .task-item.is-complete .task-label {
+        color: var(--muted);
+        text-decoration: line-through;
+      }
+
+      .remove-button,
+      .clear-button {
+        display: inline-grid;
+        min-width: 34px;
+        min-height: 34px;
+        place-items: center;
+        border: 0;
+        border-radius: 9px;
+        color: var(--muted);
+        background: transparent;
+        font-size: 1.1rem;
+      }
+
+      .remove-button:hover,
+      .clear-button:hover {
+        color: var(--deep-purple);
+        background: #f7effb;
+      }
+
+      .clear-button {
+        padding-inline: 0.65rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .empty-state {
+        padding: 1rem;
+        border: 1px dashed #d8c8e1;
+        border-radius: 12px;
+        color: var(--muted);
+        font-size: 0.875rem;
         text-align: center;
       }
 
-      footer a {
-        color: var(--pink);
-        text-underline-offset: 0.2em;
+      .side-column {
+        display: grid;
+        align-content: start;
+        gap: 1rem;
       }
 
-      @media (max-width: 600px) {
+      .date-input {
+        width: 100%;
+        min-height: 44px;
+        margin-top: 0.85rem;
+        padding: 0.65rem 0.75rem;
+      }
+
+      .countdown {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 14px;
+        color: var(--deep-purple);
+        background: #f8effd;
+      }
+
+      .countdown strong {
+        display: block;
+        font-size: 1.25rem;
+        letter-spacing: -0.035em;
+      }
+
+      .countdown span {
+        display: block;
+        margin-top: 0.2rem;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .budget-summary {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .budget-summary strong {
+        color: var(--deep-purple);
+        font-size: 1.2rem;
+        letter-spacing: -0.035em;
+      }
+
+      .budget-list {
+        display: grid;
+        gap: 0.9rem;
+      }
+
+      .budget-row {
+        display: grid;
+        gap: 0.4rem;
+      }
+
+      .budget-category {
+        color: var(--ink);
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .budget-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+
+      .money-field {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 0.3rem;
+        min-height: 38px;
+        padding: 0 0.55rem;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        color: var(--muted);
+        background: #fff;
+        font-size: 0.78rem;
+      }
+
+      .money-input {
+        width: 100%;
+        min-height: 34px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        outline-offset: 0;
+        font-size: 0.82rem;
+      }
+
+      .money-input:focus-visible {
+        outline: 2px solid var(--pink);
+      }
+
+      .budget-meter {
+        height: 6px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #f0e9f4;
+      }
+
+      .budget-meter span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--purple);
+        transition: width 180ms ease;
+      }
+
+      .budget-meter span.is-over {
+        background: #d93080;
+      }
+
+      .budget-note {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        color: var(--muted);
+        font-size: 0.72rem;
+      }
+
+      .budget-note.is-over {
+        color: #a52164;
+        font-weight: 700;
+      }
+
+      footer {
+        padding: 0 1rem 2rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-align: center;
+      }
+
+      @media (max-width: 760px) {
+        .planner-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .side-column {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
         .site-header {
-          width: min(100% - 2rem, 1200px);
-          min-height: 68px;
+          width: min(100% - 2rem, 1120px);
+          min-height: 66px;
         }
 
-        .brand {
-          gap: 0.55rem;
-          font-size: 0.9rem;
-        }
-
-        .brand-mark {
-          width: 34px;
-          height: 34px;
-        }
-
-        .canva-link {
-          min-height: 38px;
-          padding: 0.55rem 0.8rem;
-          font-size: 0.8rem;
+        .save-status {
+          max-width: 10rem;
+          text-align: right;
         }
 
         main {
-          width: 100%;
-          padding: 1.75rem 0 1.5rem;
+          width: min(100% - 1.5rem, 1120px);
+          padding-top: 1rem;
         }
 
-        .intro {
-          padding-inline: 1rem;
+        .hero {
+          padding: 2.2rem 1.35rem 3.2rem;
+          border-radius: 21px;
         }
 
-        .planner-frame {
-          border-right: 0;
-          border-left: 0;
-          border-radius: 0;
+        .stats {
+          gap: 0.5rem;
+          margin: -1.6rem 0.55rem 1rem;
         }
 
-        footer {
-          padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        .stat-card {
+          min-height: 94px;
+          padding: 0.85rem 0.7rem;
+          border-radius: 13px;
+        }
+
+        .stat-label {
+          font-size: 0.7rem;
+        }
+
+        .stat-value {
+          font-size: 1.25rem;
+        }
+
+        .side-column {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -227,42 +561,376 @@
         <span class="brand-mark" aria-hidden="true">H</span>
         <span>Holiday Planner</span>
       </a>
-      <a
-        class="canva-link"
-        href="https://www.canva.com/design/DAHZ44UkUOA/pT-qOKAYrTbnBP3VYnzD-Q/view"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Open in Canva
-      </a>
+      <span class="save-status" id="save-status" role="status" aria-live="polite">
+        Your plans save on this device
+      </span>
     </header>
 
     <main>
-      <section class="intro" aria-labelledby="page-title">
-        <p class="eyebrow">Plan a little magic</p>
-        <h1 id="page-title">Your Holiday Planner</h1>
-        <p class="intro-copy">
-          Make space for the moments, traditions, and little details that make the season yours.
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">A little more joy, a little less rush</p>
+        <h1 id="page-title">Make room for the magic.</h1>
+        <p class="hero-copy">
+          Keep the plans, the little details, and the good stuff all in one place.
         </p>
       </section>
 
-      <section class="planner-frame" aria-label="Interactive holiday planner">
-        <iframe
-          title="Interactive Holiday Planner"
-          src="https://www.canva.com/design/DAHZ44UkUOA/pT-qOKAYrTbnBP3VYnzD-Q/view?embed"
-          allowfullscreen
-          allow="fullscreen"
-        ></iframe>
+      <section class="stats" aria-label="Holiday planning summary">
+        <article class="stat-card">
+          <span class="stat-label">Days to go</span>
+          <strong class="stat-value" id="days-left" aria-live="polite">—</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Plans checked off</span>
+          <strong class="stat-value" id="tasks-progress" aria-live="polite">0 / 0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Budget left</span>
+          <strong class="stat-value" id="budget-left" aria-live="polite">$0</strong>
+        </article>
       </section>
+
+      <div class="planner-grid">
+        <section class="card" aria-labelledby="checklist-title">
+          <div class="card-heading">
+            <div>
+              <h2 id="checklist-title">The holiday checklist</h2>
+              <p class="card-description">One small thing at a time. You’ve got this.</p>
+            </div>
+            <button class="clear-button" id="clear-completed" type="button">Clear done</button>
+          </div>
+
+          <form class="task-form" id="task-form">
+            <label class="sr-only" for="task-input">Add a holiday plan</label>
+            <input
+              class="task-input"
+              id="task-input"
+              name="task"
+              type="text"
+              maxlength="120"
+              placeholder="Add a little plan…"
+              autocomplete="off"
+              required
+            >
+            <button class="primary-button" type="submit">Add plan</button>
+          </form>
+
+          <ul class="task-list" id="task-list" aria-label="Holiday plans"></ul>
+        </section>
+
+        <div class="side-column">
+          <section class="card" aria-labelledby="date-title">
+            <div class="card-heading">
+              <div>
+                <h2 id="date-title">Your special day</h2>
+                <p class="card-description">Pick the date you’re counting down to.</p>
+              </div>
+            </div>
+            <label class="sr-only" for="holiday-date">Holiday date</label>
+            <input class="date-input" id="holiday-date" type="date">
+            <div class="countdown" aria-live="polite">
+              <strong id="countdown-title">A date to look forward to</strong>
+              <span id="countdown-copy">Choose your special day above.</span>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="budget-title">
+            <div class="card-heading">
+              <div>
+                <h2 id="budget-title">A little holiday budget</h2>
+                <p class="card-description">Set a plan and track what you spend.</p>
+              </div>
+            </div>
+            <p class="budget-summary">
+              <span>Planned <strong id="planned-total">$0</strong></span>
+              <span>Spent <strong id="spent-total">$0</strong></span>
+            </p>
+            <div class="budget-list" id="budget-list"></div>
+          </section>
+        </div>
+      </div>
     </main>
 
-    <footer>
-      Interactive Holiday Planner by Sydney Tyler.
-      <a
-        href="https://www.canva.com/design/DAHZ44UkUOA/pT-qOKAYrTbnBP3VYnzD-Q/view"
-        target="_blank"
-        rel="noopener noreferrer"
-      >View the original design</a>
-    </footer>
+    <footer>Your holiday plans stay in this browser on this device.</footer>
+
+    <script>
+      (() => {
+        const storageKey = "holiday-planner-v1";
+        const categories = ["Gifts", "Food & treats", "Travel", "Decorations"];
+        const today = new Date();
+        const thisYearHoliday = new Date(today.getFullYear(), 11, 25);
+        const defaultHoliday = thisYearHoliday < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+          ? new Date(today.getFullYear() + 1, 11, 25)
+          : thisYearHoliday;
+        const defaultState = {
+          holidayDate: `${defaultHoliday.getFullYear()}-${String(defaultHoliday.getMonth() + 1).padStart(2, "0")}-${String(defaultHoliday.getDate()).padStart(2, "0")}`,
+          tasks: [
+            { id: 1, text: "Make a list of the moments you’re looking forward to", done: false },
+            { id: 2, text: "Set a holiday budget that feels good", done: false },
+            { id: 3, text: "Plan something cozy with someone you love", done: false }
+          ],
+          budgets: Object.fromEntries(categories.map((name) => [name, { planned: 0, spent: 0 }]))
+        };
+        const elements = {
+          status: document.querySelector("#save-status"),
+          daysLeft: document.querySelector("#days-left"),
+          tasksProgress: document.querySelector("#tasks-progress"),
+          budgetLeft: document.querySelector("#budget-left"),
+          plannedTotal: document.querySelector("#planned-total"),
+          spentTotal: document.querySelector("#spent-total"),
+          taskForm: document.querySelector("#task-form"),
+          taskInput: document.querySelector("#task-input"),
+          taskList: document.querySelector("#task-list"),
+          clearCompleted: document.querySelector("#clear-completed"),
+          holidayDate: document.querySelector("#holiday-date"),
+          countdownTitle: document.querySelector("#countdown-title"),
+          countdownCopy: document.querySelector("#countdown-copy"),
+          budgetList: document.querySelector("#budget-list")
+        };
+        const currency = new Intl.NumberFormat(undefined, {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0
+        });
+
+        function setStatus(message) {
+          elements.status.textContent = message;
+        }
+
+        function readState() {
+          try {
+            const saved = localStorage.getItem(storageKey);
+            if (!saved) return structuredClone(defaultState);
+
+            const parsed = JSON.parse(saved);
+            if (!Array.isArray(parsed.tasks) || !parsed.budgets || typeof parsed.holidayDate !== "string") {
+              throw new Error("Saved planner data has an unexpected format.");
+            }
+
+            return {
+              holidayDate: parsed.holidayDate,
+              tasks: parsed.tasks.filter((task) =>
+                task && (typeof task.id === "number" || typeof task.id === "string")
+                && typeof task.text === "string" && typeof task.done === "boolean"
+              ),
+              budgets: Object.fromEntries(categories.map((name) => {
+                const values = parsed.budgets[name] || {};
+                return [name, {
+                  planned: Math.max(0, Number(values.planned) || 0),
+                  spent: Math.max(0, Number(values.spent) || 0)
+                }];
+              }))
+            };
+          } catch (error) {
+            setStatus("Couldn’t load saved plans; a fresh planner is ready.");
+            return structuredClone(defaultState);
+          }
+        }
+
+        let state = readState();
+
+        function saveState() {
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(state));
+            setStatus("Your plans save on this device");
+          } catch (error) {
+            setStatus("Couldn’t save plans in this browser.");
+          }
+        }
+
+        function renderTasks() {
+          elements.taskList.replaceChildren();
+
+          if (state.tasks.length === 0) {
+            const empty = document.createElement("li");
+            empty.className = "empty-state";
+            empty.textContent = "Your list is clear. Add a plan whenever you’re ready.";
+            elements.taskList.append(empty);
+          }
+
+          for (const task of state.tasks) {
+            const item = document.createElement("li");
+            item.className = `task-item${task.done ? " is-complete" : ""}`;
+
+            const checkbox = document.createElement("input");
+            checkbox.className = "task-checkbox";
+            checkbox.type = "checkbox";
+            checkbox.checked = task.done;
+            checkbox.dataset.taskId = String(task.id);
+            checkbox.setAttribute("aria-label", `Mark "${task.text}" ${task.done ? "not done" : "done"}`);
+
+            const label = document.createElement("span");
+            label.className = "task-label";
+            label.textContent = task.text;
+
+            const remove = document.createElement("button");
+            remove.className = "remove-button";
+            remove.type = "button";
+            remove.dataset.removeTask = String(task.id);
+            remove.setAttribute("aria-label", `Remove "${task.text}"`);
+            remove.textContent = "×";
+
+            item.append(checkbox, label, remove);
+            elements.taskList.append(item);
+          }
+
+          const completed = state.tasks.filter((task) => task.done).length;
+          elements.tasksProgress.textContent = `${completed} / ${state.tasks.length}`;
+        }
+
+        function renderBudgets() {
+          elements.budgetList.replaceChildren();
+
+          for (const category of categories) {
+            const budget = state.budgets[category];
+            const row = document.createElement("div");
+            row.className = "budget-row";
+
+            const name = document.createElement("span");
+            name.className = "budget-category";
+            name.textContent = category;
+
+            const fields = document.createElement("div");
+            fields.className = "budget-fields";
+
+            for (const [key, label] of [["planned", "Plan"], ["spent", "Spent"]]) {
+              const field = document.createElement("label");
+              field.className = "money-field";
+              field.append(document.createTextNode(`${label} $`));
+
+              const input = document.createElement("input");
+              input.className = "money-input";
+              input.type = "number";
+              input.min = "0";
+              input.step = "1";
+              input.inputMode = "decimal";
+              input.value = String(budget[key]);
+              input.dataset.category = category;
+              input.dataset.budgetField = key;
+              input.setAttribute("aria-label", `${label} amount for ${category}`);
+              field.append(input);
+              fields.append(field);
+            }
+
+            const meter = document.createElement("div");
+            meter.className = "budget-meter";
+            meter.setAttribute("role", "meter");
+            meter.setAttribute("aria-label", `${category} budget spent`);
+            meter.setAttribute("aria-valuemin", "0");
+            meter.setAttribute("aria-valuemax", String(Math.max(budget.planned, budget.spent, 1)));
+            meter.setAttribute("aria-valuenow", String(budget.spent));
+
+            const fill = document.createElement("span");
+            const ratio = budget.planned > 0 ? budget.spent / budget.planned : 0;
+            fill.style.width = `${Math.min(ratio * 100, 100)}%`;
+            fill.classList.toggle("is-over", budget.spent > budget.planned && budget.planned > 0);
+            meter.append(fill);
+
+            const note = document.createElement("div");
+            note.className = `budget-note${budget.spent > budget.planned && budget.planned > 0 ? " is-over" : ""}`;
+            note.textContent = budget.spent > budget.planned && budget.planned > 0
+              ? `${currency.format(budget.spent - budget.planned)} over plan`
+              : `${currency.format(Math.max(0, budget.planned - budget.spent))} left`;
+
+            row.append(name, fields, meter, note);
+            elements.budgetList.append(row);
+          }
+
+          updateBudgetSummary();
+        }
+
+        function updateBudgetSummary() {
+          const planned = categories.reduce((sum, category) => sum + state.budgets[category].planned, 0);
+          const spent = categories.reduce((sum, category) => sum + state.budgets[category].spent, 0);
+          elements.plannedTotal.textContent = currency.format(planned);
+          elements.spentTotal.textContent = currency.format(spent);
+          elements.budgetLeft.textContent = currency.format(Math.max(0, planned - spent));
+        }
+
+        function renderDate() {
+          elements.holidayDate.value = state.holidayDate;
+          const date = new Date(`${state.holidayDate}T00:00:00`);
+          if (!state.holidayDate || Number.isNaN(date.getTime())) {
+            elements.daysLeft.textContent = "—";
+            elements.countdownTitle.textContent = "Choose a date";
+            elements.countdownCopy.textContent = "Pick a date above to start your countdown.";
+            return;
+          }
+
+          const startOfToday = new Date();
+          startOfToday.setHours(0, 0, 0, 0);
+          const days = Math.round((date - startOfToday) / 86400000);
+          const formattedDate = new Intl.DateTimeFormat(undefined, {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+          }).format(date);
+
+          elements.daysLeft.textContent = String(Math.max(0, days));
+          elements.countdownTitle.textContent = days > 0
+            ? `${days} ${days === 1 ? "day" : "days"} to go`
+            : days === 0 ? "It’s your special day!" : "A day to remember";
+          elements.countdownCopy.textContent = formattedDate;
+        }
+
+        elements.taskForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const text = elements.taskInput.value.trim();
+          if (!text) {
+            elements.taskInput.focus();
+            return;
+          }
+          state.tasks.push({ id: Date.now(), text, done: false });
+          elements.taskInput.value = "";
+          renderTasks();
+          saveState();
+          elements.taskInput.focus();
+        });
+
+        elements.taskList.addEventListener("change", (event) => {
+          const checkbox = event.target.closest("[data-task-id]");
+          if (!checkbox) return;
+          const task = state.tasks.find((item) => String(item.id) === checkbox.dataset.taskId);
+          if (!task) return;
+          task.done = checkbox.checked;
+          renderTasks();
+          saveState();
+        });
+
+        elements.taskList.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-remove-task]");
+          if (!button) return;
+          state.tasks = state.tasks.filter((task) => String(task.id) !== button.dataset.removeTask);
+          renderTasks();
+          saveState();
+        });
+
+        elements.clearCompleted.addEventListener("click", () => {
+          state.tasks = state.tasks.filter((task) => !task.done);
+          renderTasks();
+          saveState();
+        });
+
+        elements.holidayDate.addEventListener("change", () => {
+          state.holidayDate = elements.holidayDate.value;
+          renderDate();
+          saveState();
+        });
+
+        elements.budgetList.addEventListener("change", (event) => {
+          const input = event.target.closest("[data-budget-field]");
+          if (!input) return;
+          const value = Number(input.value);
+          state.budgets[input.dataset.category][input.dataset.budgetField] =
+            Number.isFinite(value) ? Math.max(0, value) : 0;
+          renderBudgets();
+          saveState();
+        });
+
+        renderTasks();
+        renderBudgets();
+        renderDate();
+      })();
+    </script>
   </body>
 </html>
