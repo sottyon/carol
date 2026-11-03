@@ -30,6 +30,13 @@ button:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{
 .dest{margin:40px 0 0}
 .dest h2{font-size:30px}
 .dest .intro{color:var(--muted);margin:6px 0 18px;max-width:46em}
+.location-filters{display:flex;flex:0 0 100%;flex-wrap:wrap;gap:8px;align-items:center;padding-top:8px}
+.location-filters[hidden]{display:none}
+.location-filters-label{flex:0 0 100%;color:var(--muted);font-size:13px;font-weight:700}
+.chip.location{font-size:13px;padding:6px 12px}
+.flight-links{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.flight-links a{display:inline-flex;align-items:center;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 11px;color:var(--green);font-size:14px;font-weight:700;text-decoration:none}
+.flight-links a:hover{background:var(--leaf)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;position:relative}
 .card.picked{border:2px solid var(--gold);padding:19px}
@@ -139,49 +146,51 @@ footer a{color:var(--green);font-weight:700}
 <script>
 const R="Resort package",V="Private villa / rental",A="Airbnb";
 const D=[
-{id:"cancun",name:"Cancun, Mexico",intro:"White-sand beaches and turquoise water in the Hotel Zone, with jet skiing, catamarans, cenotes, zip lining and nightlife nearby. Every resort has at least 3 restaurants.",items:[
+{id:"cancun",name:"Cancun, Mexico",region:"outside",airport:"CUN",intro:"White-sand beaches and turquoise water in the Hotel Zone, with jet skiing, catamarans, cenotes, zip lining and nightlife nearby. Every resort has at least 3 restaurants.",items:[
 {n:"Hilton Cancun All-Inclusive",t:R,pp:1333,tot:"$2,667.80 for 2 adults",inc:"4 days, 5 nights · flights, food, airport transfer",d:"Peaceful beachfront resort on a secluded Mayan coastline between the Caribbean and a mangrove preserve, about 15 minutes from the airport.",h:["Two oceanfront infinity pools","Numerous restaurants and bars","Fitness center","Kids’ and teens’ club","Live shows and nightly entertainment","Costco Travel Portal"]},
 {n:"Secrets The Vine Cancun",t:R,pp:1474,tot:"$2,949.12 for 2 adults",inc:"4 days, 5 nights · flights, food, airport transfer",d:"Chic adults-only all-inclusive resort in the Hotel Zone with direct beach access, at Blvd Kukulcan Km 14.5.",h:["Three infinity pools","Nine restaurants and seven bars","12,000 sq ft spa","Contemporary rooms and suites","Premium beverages","Costco Travel Portal"]},
 {n:"Royalton Hideaway Cancun",t:R,pp:1468,tot:"$2,936 for 2 adults",inc:"4 days, 5 nights · hotel, food, flights (airport transfer +$60)",d:"Adults-only resort with a lively atmosphere, exclusive pools and beach areas, and butler service included with Diamond Club.",h:["All-inclusive with room service","Infinity pool and beach","Spa and fitness","Bars, lounge and restaurants","Butler service (Diamond Club)"]}]},
-{id:"puntacana",name:"Punta Cana, Dominican Republic",intro:"Pristine beaches, year-round warmth, championship golf, catamaran cruises, snorkeling and cultural excursions, with easy flights from the U.S.",items:[
+{id:"puntacana",name:"Punta Cana, Dominican Republic",region:"outside",airport:"PUJ",intro:"Pristine beaches, year-round warmth, championship golf, catamaran cruises, snorkeling and cultural excursions, with easy flights from the U.S.",items:[
 {n:"Dreams Flora Resort & Spa",t:R,pp:1544,tot:"$3,089.58 for 2 adults",inc:"4 days, 5 nights · flights, food, airport transfer",d:"Palm-studded beach in Cabeza de Toro, about 20 minutes from the airport. Great for couples and multigenerational families.",h:["Suites with terrace or balcony","Eight dining options, five à la carte","Water park and pools","Spa and fitness center","Daily entertainment","Costco Travel Portal"]},
 {n:"Secrets Royal Beach Punta Cana",t:R,pp:1697,tot:"$3,394.62 for 2 adults",inc:"4 days, 5 nights · flights, food, airport transfer",d:"Adults-only, serene beachfront getaway on a white-sand beach in El Cortecito, Bavaro (Unlimited-Luxury).",h:["Caribbean and modern décor","Amenities and activities included","Beachfront on the Caribbean Sea","Costco Travel Portal"]}]},
-{id:"pr",name:"Puerto Rico",intro:"Two beach-house rentals and one big resort, close to Old San Juan, La Placita, Calle Loíza and El Yunque National Forest.",items:[
+{id:"pr",name:"Puerto Rico",region:"us",airport:"SJU",intro:"Two beach-house rentals and one big resort, close to Old San Juan, La Placita, Calle Loíza and El Yunque National Forest.",items:[
 {n:"Villa in Casa Blanca",t:V,lp:488,fl:986,inc:"4 days, 5 nights · lodging and flights",d:"New luxury beachfront house on the north coast with ocean views and direct beach access.",h:["Two stories: 3 bedrooms and 3 bedrooms","Terraces, BBQ grill, heated pool","Direct beach access","Kayak, snorkel gear, rafts, board games","Washer and dryer","Airbnb and American Airlines"]},
 {n:"Azurea | Modern 6BR with Pool Steps to Beach",t:V,lp:608,fl:986,inc:"4 nights · lodging and flights",d:"Newly renovated 6-bedroom, 8-bath home in Ocean Park for up to 12 guests, a 2-minute walk to the beach and 10 minutes from the airport.",h:["Private pool and covered terrace","Five bedrooms plus a private one-bedroom apartment","Full-home A/C, backup generator, laundry","Parking for 3 vehicles","Walk to restaurants, shops and nightlife","Costco Travel Portal"]},
 {n:"Hyatt Regency Grand Reserve",t:R,pp:1726,tot:"$3,452 for 2 adults",inc:"4 days, 5 nights · hotel, flights, airport transfer",d:"Oceanfront resort on 72 protected acres at the foothills of the El Yunque rainforest, with a country-club feel.",h:["Private beach and lagoon-style pools","18-hole Tom Kite golf course","Full-service spa","Steakhouse, Hibachi, Puerto Rican cuisine","579 rooms, suites and villas","Costco Travel Portal"]}]},
-{id:"aruba",name:"Aruba",intro:"Two large private-pool villas minutes from Palm Beach, restaurants, shopping and the High-Rise Hotel District.",items:[
+{id:"aruba",name:"Aruba",region:"outside",airport:"AUA",intro:"Two large private-pool villas minutes from Palm Beach, restaurants, shopping and the High-Rise Hotel District.",items:[
 {n:"Entire villa in Noord",t:V,lp:557,fl:940,inc:"4 days, 5 nights · lodging and flights",d:"Newly remodeled 6-bedroom, 6.5-bath villa for up to 14 guests, a 5-minute walk to Palm Beach.",h:["Private pool, palapa, hammock, yoga area","Professional BBQ grill and ice maker","65\" Smart TV and high-speed Wi-Fi","Beach chairs, towels, cooler, A/C","Pack & Play and high chair on request","Concierge for cars and excursions"]},
 {n:"Amazing Tropical Oasis | Private Pool | BBQ",t:V,lp:753,fl:940,inc:"4 nights · lodging and flights",d:"Contemporary 10-bedroom, 10-bath estate that sleeps up to 24, in Rooi Santo near Palm Beach.",h:["Every bedroom has an ensuite and A/C","Main house plus 6 private guest suites","Private pool, BBQ, outdoor dining","Ideal for reunions and celebrations","Costco Travel Portal"]}]},
-{id:"belize",name:"Belize",intro:"A beach club resort or a three-home villa compound with a private pool.",items:[
+{id:"belize",name:"Belize",region:"outside",airport:"BZE",intro:"A beach club resort or a three-home villa compound with a private pool.",items:[
 {n:"Mahogany Bay Resort & Beach Club by Hilton",t:R,lp:598,fl:940,inc:"4 days, 5 nights · lodging and flights",d:"A 1,246 sq ft three-bedroom family cottage with vaulted 16-ft open-beam ceilings, good for a family or two couples.",h:["King master with soaking tub","Second king with open-air shower","Bunk room with two twin bunks","Full kitchen with dishwasher","Free Wi-Fi, A/C, ceiling fans, TV","Airbnb and American Airlines"]},
 {n:"3-home Villa oasis with private pool",t:V,lp:417,fl:940,inc:"4 nights · lodging and flights",d:"Villa Grande, Villa Medio and Villa Pequena share a tropical oasis, the lowest-cost option on the list.",h:["Pool with loungers and cabana","Courtyard with palapa and bar seating","Gas fire pit seating area","Charcoal grill and corn hole","Full kitchens in each villa","Airbnb"]}]},
-{id:"tci",name:"Turks & Caicos",intro:"Grace Bay, one of the world’s most photographed beaches, a short drive from shops and restaurants.",items:[
+{id:"tci",name:"Turks & Caicos",region:"outside",airport:"PLS",intro:"Grace Bay, one of the world’s most photographed beaches, a short drive from shops and restaurants.",items:[
 {n:"Entire home in Providenciales",t:V,lp:722,fl:940,inc:"4 days, 5 nights · lodging and flights",d:"Nine bedrooms and 10.5 baths across three adjoining townhomes, with Grace Bay ocean views from the upper floors.",h:["Every bedroom has an ensuite and closet","Rooftop deck from unit 3","Private deck with pool access and grill","Outdoor dining and seating","5-minute drive to Grace Bay shops","Airbnb and American Airlines"]}]},
-{id:"fl",name:"Florida (Fort Lauderdale area)",intro:"A drive-or-short-flight option with three Airbnb homes. Prices are listed on Airbnb for December 2026.",items:[
+{id:"fl",name:"Florida (Fort Lauderdale area)",region:"us",airport:"FLL",intro:"A drive-or-short-flight option with three Airbnb homes. Prices are listed on Airbnb for December 2026.",items:[
 {n:"Villa with Pool, Tiki Hut, Full Gym, King Bed, Wi-Fi, TV",t:A,lk:"https://www.airbnb.com/rooms/23273824?check_in=2026-12-14&check_out=2026-12-17",d:"Fort Lauderdale villa rated 4.95 stars.",h:["3 bedrooms, 3 beds, 2 baths","Pool and tiki hut","Full gym"]},
 {n:"Entire home in Pembroke Pines",t:A,lk:"https://www.airbnb.com/rooms/1079928433273991710?check_in=2026-12-14&check_out=2026-12-17",d:"Pembroke Pines home rated 4.83 stars.",h:["3 bedrooms, 5 beds, 2 baths"]},
 {n:"Entire home in Fort Lauderdale",t:A,lk:"https://www.airbnb.com/rooms/903884275068270484?check_in=2026-12-14&check_out=2026-12-17",d:"Fort Lauderdale home rated 4.76 stars.",h:["3 bedrooms, 4 beds, 2 baths"]}]},
-{id:"vegas",name:"Las Vegas",intro:"Two big North Las Vegas Airbnb homes with pools and games for the whole group.",items:[
+{id:"vegas",name:"Las Vegas",region:"us",airport:"LAS",intro:"Two big North Las Vegas Airbnb homes with pools and games for the whole group.",items:[
 {n:"Spacious 5BR Oasis: Pool/Spa, Golf & Arcades",t:A,lk:"https://www.airbnb.com/rooms/1315009283117068700?check_in=2026-12-14&check_out=2026-12-17",d:"North Las Vegas home rated 4.96 stars.",h:["5 bedrooms, 8 beds, 3 baths","Pool and spa","Golf and arcade games"]},
 {n:"Bungalow Vegas 7BR Fun House with Pool, Spa & Games",t:A,lk:"https://www.airbnb.com/rooms/1620626162169425076?check_in=2026-12-14&check_out=2026-12-17",d:"North Las Vegas home rated a perfect 5.0.",h:["7 bedrooms, 11 beds, 3 baths","Pool and spa","Games"]}]}
 ];
 const money=n=>"$"+n.toLocaleString("en-US");
-let filter="all",sort="default",picks=[],gs=2,cs={};const SZ=[1,3,5,7,10];gs=10;let k=0;D.forEach(d=>d.items.forEach(i=>i.id="c"+k++));
+let filter="all",locationFilter="",sort="default",picks=[],gs=2,cs={};const SZ=[1,3,5,7,10];gs=10;let k=0;D.forEach(d=>d.items.forEach(i=>i.id="c"+k++));
 try{picks=JSON.parse(localStorage.getItem("carol80picks")||"[]")}catch(e){}
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 function save(){try{localStorage.setItem("carol80picks",JSON.stringify(picks))}catch(e){}}
 function chips(){
 const c=document.getElementById("chips");
-c.innerHTML=[["all","All"],...D.map(d=>[d.id,d.name.split(",")[0].split(" (")[0]])].map(([id,l])=>`<button class="chip" type="button" data-f="${id}" aria-pressed="${filter===id}">${l}</button>`).join("")+
+c.innerHTML=[["all","All"],["us","United States"],["outside","Outside of the US"]].map(([id,l])=>`<button class="chip" type="button" data-f="${id}" aria-pressed="${filter===id}">${l}</button>`).join("")+
+`<div class="location-filters" ${filter!=="outside"?"hidden":""} role="group" aria-label="Filter by international destination"><span class="location-filters-label">Outside of the US destinations</span><button class="chip location" type="button" data-location="" aria-pressed="${locationFilter===""}">All outside destinations</button>${D.filter(d=>d.region==="outside").map(d=>`<button class="chip location" type="button" data-location="${d.id}" aria-pressed="${locationFilter===d.id}">${d.name}</button>`).join("")}</div>`+
 `<div class="seg" role="group" aria-label="Group size for all options"><span>People</span>${SZ.map(z=>`<button type="button" data-g="${z}" aria-pressed="${gs===z}">${z}</button>`).join("")}</div><select class="sort" id="sort" aria-label="Sort"><option value="default">Sort: destination</option><option value="asc">Price: low to high</option><option value="desc">Price: high to low</option></select>`;
 document.getElementById("sort").value=sort;
 }
 const link=(it,n)=>it.lk+(it.lk.includes("?")?"&":"?")+"adults="+n;
+const flightLinks=d=>`<div class="flight-links" aria-label="Flight search for ${esc(d.name)}"><a href="https://www.google.com/travel/flights?q=${encodeURIComponent(`Flights to ${d.airport}`)}" target="_blank" rel="noopener noreferrer">Google Flights to ${esc(d.airport)}</a><a href="https://www.kayak.com/flights/ANY-${encodeURIComponent(d.airport)}" target="_blank" rel="noopener noreferrer">Compare airlines</a></div>`;
 const priceAt=(it,n)=>it.lk?null:it.pp?it.pp:Math.round(it.lp*10/n)+it.fl;
 function priceHTML(it,n){
 const who=n+(n===1?" person":" people");
-if(it.lk)return `<p class="note">Price shown on Airbnb. The link below is set to ${who}, December 2026.</p><a class="btn big" href="${link(it,n)}" target="_blank" rel="noopener">View this home on Airbnb</a>`;
+if(it.lk)return `<div class="price">Airbnb price varies <small>December 14–17 · ${who}</small></div><p class="note">Airbnb’s current stay total, including fees, is shown on the listing.</p><a class="btn big" href="${link(it,n)}" target="_blank" rel="noopener noreferrer">See current price on Airbnb</a>`;
 if(it.pp)return `<div class="price">${money(it.pp)} <small>per person</small></div><dl class="rows"><dt>Package: flights, food, transfer</dt><dd>${money(it.pp)}</dd><dt class="t">Total for ${who}</dt><dd class="t">about ${money(it.pp*n)}</dd></dl><p class="note">${it.inc}. Priced for 2 adults sharing a room, so ${n%2?"an odd traveler may add a single supplement":"confirm room setup"} in the portal.</p>`;
 const lod=Math.round(it.lp*10/n),pp=lod+it.fl,tot=it.lp*10+it.fl*n;
 return `<div class="price">${money(pp)} <small>per person</small></div><dl class="rows"><dt>Lodging share (${money(it.lp*10)} split ${n} way${n>1?"s":""})</dt><dd>${money(lod)}</dd><dt>Flights (approx.)</dt><dd>${money(it.fl)}</dd><dt class="t">Total for ${who}</dt><dd class="t">about ${money(tot)}</dd></dl><p class="note">${it.inc}. Food not included.${n<10?" A smaller group may find a smaller, cheaper place.":""}</p>`;
@@ -197,19 +206,20 @@ return `<article class="card${on?" picked":""}" data-id="${it.id}"><span class="
 }
 function render(){
 let h="";
-const ds=D.filter(d=>filter==="all"||d.id===filter);
+const ds=D.filter(d=>filter==="all"||(filter==="us"&&d.region==="us")||(filter==="outside"&&d.region==="outside"&&(!locationFilter||d.id===locationFilter)));
 if(sort==="default"){
-h=ds.map(d=>`<section class="dest"><h2>${d.name}</h2><p class="intro">${d.intro}</p><div class="grid">${d.items.map(card).join("")}</div></section>`).join("");
+h=ds.map(d=>`<section class="dest"><h2>${d.name}</h2><p class="intro">${d.intro}</p>${flightLinks(d)}<div class="grid">${d.items.map(card).join("")}</div></section>`).join("");
 }else{
 const all=ds.flatMap(d=>d.items.map(i=>({...i,dn:d.name})));
 all.sort((a,b)=>{const x=priceAt(a,gs),y=priceAt(b,gs);if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;return sort==="asc"?x-y:y-x});
-h=`<section class="dest"><h2>${sort==="asc"?"Lowest price first":"Highest price first"}</h2><p class="intro">Airbnb homes without a posted price are listed last.</p><div class="grid">${all.map(i=>card({...i,n:i.n,d:`<b>${i.dn}.</b> ${i.d}`})).join("")}</div></section>`;
+h=`<section class="dest"><h2>${sort==="asc"?"Lowest price first":"Highest price first"}</h2><p class="intro">Airbnb homes without a posted price are listed last.</p>${ds.map(flightLinks).join("")}<div class="grid">${all.map(i=>card({...i,n:i.n,d:`<b>${i.dn}.</b> ${i.d}`})).join("")}</div></section>`;
 }
 document.getElementById("list").innerHTML=h;
 document.getElementById("picks").innerHTML=picks.length?picks.map(p=>`<span class="pill">${esc(p)}</span>`).join(" "):`<span style="opacity:.8">Tap a heart to add a pick.</span>`;
 }
 document.addEventListener("click",e=>{
-const f=e.target.closest("[data-f]");if(f){filter=f.dataset.f;chips();render();return}
+const f=e.target.closest("[data-f]");if(f){filter=f.dataset.f;locationFilter="";chips();render();return}
+const location=e.target.closest("[data-location]");if(location){locationFilter=location.dataset.location;chips();render();return}
 const g=e.target.closest("[data-g]");if(g){gs=+g.dataset.g;cs={};chips();render();return}
 const sz=e.target.closest("[data-s]");
 if(sz){const [id,v]=sz.dataset.s.split(":"),n=+v;cs[id]=n;const el=document.querySelector(`[data-id="${id}"]`);const it=D.flatMap(d=>d.items).find(i=>i.id===id);
